@@ -1,0 +1,26 @@
+    <configuration>
+
+        <!-- Definición del appender para la salida en consola -->
+        <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- Definición del appender para la salida en un archivo -->
+        <appender name="FILE" class="ch.qos.logback.core.FileAppender">
+            <file>logs/application.log</file>
+            <encoder>
+                <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} %-5level [%thread] %logger{36} - %msg%n</pattern>
+            </encoder>
+        </appender>
+
+        <!-- Configuración de los niveles de log para toda la aplicación -->
+        <root level="INFO">
+            <appender-ref ref="CONSOLE"/>
+            <appender-ref ref="FILE"/>
+        </root>
+
+
+
+    </configuration>
