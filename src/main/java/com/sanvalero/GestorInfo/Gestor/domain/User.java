@@ -5,8 +5,8 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import javax.persistence.*;
+import javax.validation.constraints.*;
 import java.util.Date;
-
 
 @Data
 @AllArgsConstructor
@@ -17,15 +17,20 @@ public class User {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
+    @Size(max = 50, message = "El nombre de usuario no puede exceder los 50 caracteres")
+    @NotBlank(message = "El nombre de usuario no puede estar en blanco")
     @Column
     private String username;
 
+    @Size(min = 6, max = 50, message = "La contraseña debe tener entre 6 y 50 caracteres")
     @Column
     private String password;
 
+    @Size(max = 100, message = "El nombre completo no puede exceder los 100 caracteres")
     @Column
     private String fullname;
 
+    @Email(message = "El formato del correo electrónico no es válido")
     @Column
     private String email;
 

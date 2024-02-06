@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.persistence.EntityNotFoundException;
 import java.util.*;
+import java.util.stream.Collectors;
 
 @Service
 public class PublicationService {
@@ -22,15 +23,14 @@ public class PublicationService {
 
     @Autowired
     public PublicationService(PublicationRepository publicationRepository, UserRepository userRepository,
-            CategoryRepository categoryRepository,
-            TagRepository tagRepository, CommentRepository commentRepository) {
+                              CategoryRepository categoryRepository,
+                              TagRepository tagRepository, CommentRepository commentRepository) {
         this.publicationRepository = publicationRepository;
         this.userRepository = userRepository;
         this.categoryRepository = categoryRepository;
         this.tagRepository = tagRepository;
-        this.commentRepository= commentRepository;
+        this.commentRepository = commentRepository;
     }
-
 
 
     public List<Publication> getFilteredPublications(String title, String user, String category) {
@@ -42,11 +42,14 @@ public class PublicationService {
     }
 
     public Publication createPublication(PublicationDTO publicationDTO) {
-        publicationDTO.setCreationDate(new Date()); // Puedes asignar la fecha actual o la fecha proporcionada en el DTO
+        publicationDTO.setCreationDate(new Date());
         Publication publication = convertToEntity(publicationDTO);
 
         // Guardar la publicación
         publication = publicationRepository.save(publication);
+
+        // Recargar la publicación con las relaciones cargadas
+        publication = publicationRepository.findById(publication.getId()).orElse(null);
 
         // Devolver la publicación creada
         return publication;
@@ -75,42 +78,43 @@ public class PublicationService {
         publication.setTitle(publicationDTO.getTitle());
         publication.setContent(publicationDTO.getContent());
 
-        try {
-            // Asociar usuario y categoría (asumiendo que ya existen en la base de datos)
-            User user = userRepository.findById(publicationDTO.getUserId())
-                    .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + publicationDTO.getUserId()));
-            publication.setUser(user);
+        // Asociar usuario y categoría (asumiendo que ya existen en la base de datos)
+        User user = userRepository.findById(publicationDTO.getUserId())
+                .orElseThrow(() -> new EntityNotFoundException("Usuario no encontrado con ID: " + publicationDTO.getUserId()));
+        publication.setUser(user);
 
-            Category category = categoryRepository.findById(publicationDTO.getCategoryId())
-                    .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada con ID: " + publicationDTO.getCategoryId()));
-            publication.setCategory(category);
+        Category category = categoryRepository.findById(publicationDTO.getCategoryId())
+                .orElseThrow(() -> new EntityNotFoundException("Categoría no encontrada con ID: " + publicationDTO.getCategoryId()));
+        publication.setCategory(category);
 
-            // Cargar las etiquetas dentro de una transacción de Hibernate
-            Set<Tag> tags = new HashSet<>();
+        // Cargar las etiquetas dentro de una transacción de Hibernate
+        Set<Tag> tags = new HashSet<>();
+        if (publicationDTO.getTagIds() != null) {
             for (Long tagId : publicationDTO.getTagIds()) {
                 Tag tag = tagRepository.findById(tagId)
                         .orElseThrow(() -> new EntityNotFoundException("Etiqueta no encontrada con ID: " + tagId));
                 tags.add(tag);
             }
-            publication.setTags(tags);
-
-            // Cargar los comentarios dentro de una transacción de Hibernate
-            Set<Comment> comments = new HashSet<>();
-            if (publicationDTO.getCommentIds() != null) {
-                for (Long commentId : publicationDTO.getCommentIds()) {
-                    Comment comment = commentRepository.findById(commentId)
-                            .orElseThrow(() -> new EntityNotFoundException("Comentario no encontrado con ID: " + commentId));
-                    comments.add(comment);
-                }
-            }
-            publication.setComments(comments);
-
-        } catch (EntityNotFoundException e) {
-            throw new RuntimeException("Error al crear la publicación: " + e.getMessage());
         }
+        publication.setTags(tags);
+
+        // Cargar los comentarios dentro de una transacción de Hibernate
+        Set<Comment> comments = new HashSet<>();
+        if (publicationDTO.getCommentIds() != null) {
+            for (Long commentId : publicationDTO.getCommentIds()) {
+                Comment comment = commentRepository.findById(commentId)
+                        .orElseThrow(() -> new EntityNotFoundException("Comentario no encontrado con ID: " + commentId));
+                comments.add(comment);
+            }
+        }
+        publication.setComments(comments);
 
         return publication;
     }
 
 
 }
+
+
+
+

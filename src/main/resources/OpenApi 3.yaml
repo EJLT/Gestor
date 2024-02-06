@@ -1,0 +1,457 @@
+openapi: 3.0.0
+info:
+  title: Gestor Info API
+  version: 1.0.0
+  description: API para gestionar información
+servers:
+  - url: 'https://api.gestor.com'
+tags:
+  - name: User
+    description: Operaciones para gestionar los usuarios.
+  - name: Category
+    description: Operaciones para gestionar las categorias.
+  - name: Publication
+    description: Operaciones para gestionar las publicaciones.
+  - name: Tag
+    description: Operaciones a realizar sobre los tags.
+  - name: Comment
+    description: Operaciones a realizar sobre los comentarios.
+
+paths:
+  /users:
+    get:
+      tags:
+        - users
+      summary: Obtener todos los usuarios
+      description: |
+        Esta operación permite obtener una lista de todos los usuarios registrados.
+        -
+        -
+      parameters:
+        - $ref: '#/components/parameters/UserID'
+      responses:
+        '200':
+          description: Devuelve exitosamente una lista de todos los usuarios.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/InternalServerError'
+
+    post:
+      summary: Crear un nuevo usuario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '201':
+          description: Usuario creado correctamente
+
+  /users/{id}:
+    get:
+      summary: Obtener un usuario por ID
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Éxito
+        '404':
+          description: Usuario no encontrado
+
+    put:
+      summary: Actualizar un usuario por ID
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/User'
+      responses:
+        '200':
+          description: Usuario actualizado correctamente
+        '404':
+          description: Usuario no encontrado
+
+    delete:
+      summary: Eliminar un usuario por ID
+      parameters:
+        - $ref: '#/components/parameters/userId'
+      responses:
+        '200':
+          description: Usuario eliminado correctamente
+        '404':
+          description: Usuario no encontrado
+
+  /tags:
+    get:
+      summary: Obtener todas las etiquetas
+      responses:
+        '200':
+          description: Éxito
+    post:
+      summary: Crear una nueva etiqueta
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '201':
+          description: Etiqueta creada correctamente
+
+  /tags/{id}:
+    get:
+      summary: Obtener una etiqueta por ID
+      parameters:
+        - $ref: '#/components/parameters/tagId'
+      responses:
+        '200':
+          description: Éxito
+        '404':
+          description: Etiqueta no encontrada
+
+    put:
+      summary: Actualizar una etiqueta por ID
+      parameters:
+        - $ref: '#/components/parameters/tagId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Tag'
+      responses:
+        '200':
+          description: Etiqueta actualizada correctamente
+        '404':
+          description: Etiqueta no encontrada
+
+    delete:
+      summary: Eliminar una etiqueta por ID
+      parameters:
+        - $ref: '#/components/parameters/tagId'
+      responses:
+        '200':
+          description: Etiqueta eliminada correctamente
+        '404':
+          description: Etiqueta no encontrada
+
+  /comments:
+    get:
+      summary: Obtener todos los comentarios
+      responses:
+        '200':
+          description: Éxito
+    post:
+      summary: Crear un nuevo comentario
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '201':
+          description: Comentario creado correctamente
+
+  /comments/{id}:
+    get:
+      summary: Obtener un comentario por ID
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      responses:
+        '200':
+          description: Éxito
+        '404':
+          description: Comentario no encontrado
+
+    put:
+      summary: Actualizar un comentario por ID
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Comment'
+      responses:
+        '200':
+          description: Comentario actualizado correctamente
+        '404':
+          description: Comentario no encontrado
+
+    delete:
+      summary: Eliminar un comentario por ID
+      parameters:
+        - $ref: '#/components/parameters/commentId'
+      responses:
+        '200':
+          description: Comentario eliminado correctamente
+        '404':
+          description: Comentario no encontrado
+
+  /publications:
+    get:
+      summary: Obtener todas las publicaciones
+      responses:
+        '200':
+          description: Éxito
+    post:
+      summary: Crear una nueva publicación
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publication'
+      responses:
+        '201':
+          description: Publicación creada correctamente
+
+  /publications/{id}:
+    get:
+      summary: Obtener una publicación por ID
+      parameters:
+        - $ref: '#/components/parameters/publicationId'
+      responses:
+        '200':
+          description: Éxito
+        '404':
+          description: Publicación no encontrada
+
+    put:
+      summary: Actualizar una publicación por ID
+      parameters:
+        - $ref: '#/components/parameters/publicationId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Publication'
+      responses:
+        '200':
+          description: Publicación actualizada correctamente
+        '404':
+          description: Publicación no encontrada
+
+    delete:
+      summary: Eliminar una publicación por ID
+      parameters:
+        - $ref: '#/components/parameters/publicationId'
+      responses:
+        '200':
+          description: Publicación eliminada correctamente
+        '404':
+          description: Publicación no encontrada
+
+  /categories:
+    get:
+      summary: Obtener todas las categorías
+      responses:
+        '200':
+          description: Éxito
+    post:
+      summary: Crear una nueva categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '201':
+          description: Categoría creada correctamente
+
+  /categories/{id}:
+    get:
+      summary: Obtener una categoría por ID
+      parameters:
+        - $ref: '#/components/parameters/categoryId'
+      responses:
+        '200':
+          description: Éxito
+        '404':
+          description: Categoría no encontrada
+
+    put:
+      summary: Actualizar una categoría por ID
+      parameters:
+        - $ref: '#/components/parameters/categoryId'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/Category'
+      responses:
+        '200':
+          description: Categoría actualizada correctamente
+        '404':
+          description: Categoría no encontrada
+
+    delete:
+      summary: Eliminar una categoría por ID
+      parameters:
+        - $ref: '#/components/parameters/categoryId'
+      responses:
+        '200':
+          description: Categoría eliminada correctamente
+        '404':
+          description: Categoría no encontrada
+
+components:
+  schemas:
+    User:
+      type: object
+      properties:
+        id:
+          type: integer
+        username:
+          type: string
+        password:
+          type: string
+        fullname:
+          type: string
+        email:
+          type: string
+      required:
+        - username
+        - password
+        - fullname
+        - email
+
+    Tag:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - name
+
+    Comment:
+      type: object
+      properties:
+        id:
+          type: integer
+        text:
+          type: string
+        publication:
+          type: object
+          properties:
+            id:
+              type: integer
+        commentDate:
+          type: string
+          format: date-time
+      required:
+        - text
+        - publication
+        - commentDate
+
+    Publication:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        content:
+          type: string
+        user:
+          type: object
+          properties:
+            id:
+              type: integer
+        category:
+          type: object
+          properties:
+            id:
+              type: integer
+        tags:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+        creationDate:
+          type: string
+          format: date-time
+        comments:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: integer
+        required:
+          - title
+          - content
+          - user
+          - category
+          -
+
+    Category:
+      type: object
+      properties:
+        id:
+          type: integer
+        name:
+          type: string
+      required:
+        - name
+
+  parameters:
+    userId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    tagId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    commentId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    publicationId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer
+
+    categoryId:
+      name: id
+      in: path
+      required: true
+      schema:
+        type: integer

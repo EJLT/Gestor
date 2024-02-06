@@ -40,18 +40,13 @@ public class CategoryService {
 
     @Transactional
     public Optional<Category> getCategoryById(Long id) {
-        Category category = entityManager.createQuery(
-                        "SELECT c FROM gestor_category c LEFT JOIN FETCH c.publications WHERE c.id = :id",
-                        Category.class
-                )
-                .setParameter("id", id)
-                .getSingleResult();
-
-        // Inicializar la colección antes de cerrar la sesión
-        Hibernate.initialize(category.getPublications());
-
-        return Optional.of(category);
+        return categoryRepository.findById(id)
+                .map(category -> {
+                    Hibernate.initialize(category.getPublications());
+                    return category;
+                });
     }
+
     public Category createCategory(Category category) {
         return categoryRepository.save(category);
     }
