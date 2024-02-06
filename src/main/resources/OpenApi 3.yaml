@@ -25,10 +25,8 @@ paths:
       summary: Obtener todos los usuarios
       description: |
         Esta operación permite obtener una lista de todos los usuarios registrados.
-        -
-        -
       parameters:
-        - $ref: '#/components/parameters/UserID'
+        - $ref: '#/components/parameters/userName'
       responses:
         '200':
           description: Devuelve exitosamente una lista de todos los usuarios.
@@ -48,30 +46,87 @@ paths:
                   $ref: '#/components/schemas/InternalServerError'
 
     post:
+      tags:
+        - users
       summary: Crear un nuevo usuario
+      description: |
+        Esta operación permite dar de alta un nuevo usuario.
       requestBody:
         required: true
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/User'
+              type: array
+              items:
+                $ref: '#/components/schemas/User'
       responses:
         '201':
-          description: Usuario creado correctamente
+          description: Usuario creado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
+        '400':
+          description: Bad Request (Error de validación en los datos de entrada)
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/BadRequestException'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                  type: array
+                  items:
+                     $ref: '#/components/schemas/InternalServerError'
 
-  /users/{id}:
+
+  /user/{userId}:
     get:
-      summary: Obtener un usuario por ID
+      tags:
+        - users
+      summary: Obtener un usuario por ID.
+      description: |
+        Esta operación permite consultar los datos de un usuario a través del ID.
       parameters:
         - $ref: '#/components/parameters/userId'
       responses:
         '200':
-          description: Éxito
+          description: El usuario ha sido encontrado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '404':
           description: Usuario no encontrado
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/InternalServerError'
 
     put:
+      tags:
+        - users
       summary: Actualizar un usuario por ID
+      description: |
+        Esta operación permite actualizar un usuario en la base de datos.
       parameters:
         - $ref: '#/components/parameters/userId'
       requestBody:
@@ -82,28 +137,97 @@ paths:
               $ref: '#/components/schemas/User'
       responses:
         '200':
-          description: Usuario actualizado correctamente
+          description: El usuario ha sido modificado de manera correcta.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/User'
         '404':
-          description: Usuario no encontrado
+          description: No se ha podido encontrar el usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/responses/InternalServerError'
 
     delete:
+      tags:
+        - users
       summary: Eliminar un usuario por ID
+      description: |
+        Esta operación permite eliminar un usuario de la base de datos.
       parameters:
         - $ref: '#/components/parameters/userId'
       responses:
         '200':
-          description: Usuario eliminado correctamente
+          description: El usuario ha sido eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                     $ref: '#/components/schemas/User'
         '404':
-          description: Usuario no encontrado
+          description: No se ha podido encontrar el usuario.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                   $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+          description: Internal Server Error
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                     $ref: '#/components/responses/InternalServerError'
+
 
   /tags:
     get:
+      tags:
+        - tags
       summary: Obtener todas las etiquetas
+      description:
+        Esta operación permite mostrar todas las etiquetas.
+      parameters:
+        - $ref: '#/components/parameters/name'
       responses:
         '200':
-          description: Éxito
+          description: Devuelve la lista completa de las tags agregadas en la base de datos.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - tags
       summary: Crear una nueva etiqueta
+      description:
+        Esta operación permite crear una nueva etiqueta.
       requestBody:
         required: true
         content:
@@ -112,21 +236,71 @@ paths:
               $ref: '#/components/schemas/Tag'
       responses:
         '201':
-          description: Etiqueta creada correctamente
+          description: La etiqueta se ha registrado de manera correcta.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
+        '400':
+            description: Bad Request (Error de validcación en los datos de entrada)
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/BadRequestException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
-  /tags/{id}:
+  /tags/{tagId}:
     get:
+      tags:
+        - tags
       summary: Obtener una etiqueta por ID
+      description:
+        Esta operación permite buscar las etiquetas por el ID que tenga asignado.
       parameters:
         - $ref: '#/components/parameters/tagId'
       responses:
         '200':
-          description: Éxito
+          description: La etiqueta ha sido encontrada correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
         '404':
-          description: Etiqueta no encontrada
+            description: No se ha podido encontrar la etiqueta.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     put:
+      tags:
+        - tags
       summary: Actualizar una etiqueta por ID
+      description:
+        Esta operación te permite actualizar una etiqueta.
       parameters:
         - $ref: '#/components/parameters/tagId'
       requestBody:
@@ -137,28 +311,96 @@ paths:
               $ref: '#/components/schemas/Tag'
       responses:
         '200':
-          description: Etiqueta actualizada correctamente
+          description: La etiqueta ha sido modificada correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
         '404':
-          description: Etiqueta no encontrada
+            description: No se ha podido encontrar la etiqueta.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     delete:
+      tags:
+        - tags
       summary: Eliminar una etiqueta por ID
+      description:
+        Esta operación permite eliminar una etiqueta.
       parameters:
         - $ref: '#/components/parameters/tagId'
       responses:
         '200':
-          description: Etiqueta eliminada correctamente
+          description: La etiqueta se ha eliminado de manera correcta.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Tag'
         '404':
-          description: Etiqueta no encontrada
+            description: No se ha podido encontrar la etiqueta.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/responses/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
   /comments:
     get:
-      summary: Obtener todos los comentarios
+      tags:
+        - comments
+      summary: Obtener todos los comentarios.
+      description:
+        Esta operación permite obtener una lista con todos los comentarios.
+      parameters:
+        - $ref: '#/components/parameters/text'
       responses:
         '200':
-          description: Éxito
+          description: Devuelve la lista completa de los comentarios guardados.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - comments
       summary: Crear un nuevo comentario
+      description: |
+        Esta operación permite crear un nuevo comentario.
       requestBody:
         required: true
         content:
@@ -167,21 +409,71 @@ paths:
               $ref: '#/components/schemas/Comment'
       responses:
         '201':
-          description: Comentario creado correctamente
+          description: El comentario ha sido registrado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
+        '400':
+            description: Bad Request (Error de validcación en los datos de entrada)
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/BadRequestException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
-  /comments/{id}:
+  /comments/{commentId}:
     get:
+      tags:
+        - comments
       summary: Obtener un comentario por ID
+      description: |
+        Esta operación permite consultar los comentarios mediante el ID.
       parameters:
         - $ref: '#/components/parameters/commentId'
       responses:
         '200':
-          description: Éxito
+          description: El comentario ha sido encontrado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         '404':
-          description: Comentario no encontrado
+            description: No se ha podido encontrar el comentario.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     put:
+      tags:
+        - comments
       summary: Actualizar un comentario por ID
+      description: |
+        Esta operación permite modificar un comentario de la base de datos.
       parameters:
         - $ref: '#/components/parameters/commentId'
       requestBody:
@@ -192,28 +484,96 @@ paths:
               $ref: '#/components/schemas/Comment'
       responses:
         '200':
-          description: Comentario actualizado correctamente
+          description: El comentario ha sido modificado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         '404':
-          description: Comentario no encontrado
+            description: No se ha podido encontrar el comentario.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     delete:
+      tags:
+        - comments
       summary: Eliminar un comentario por ID
+      description: |
+        Esta operación permite eliminar un comentario de la base de datos.
       parameters:
         - $ref: '#/components/parameters/commentId'
       responses:
         '200':
-          description: Comentario eliminado correctamente
+          description: El comentario ha sido eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Comment'
         '404':
-          description: Comentario no encontrado
+            description: No se ha podido encontrar el comentario.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
   /publications:
     get:
+      tags:
+        - publication
       summary: Obtener todas las publicaciones
+      description: |
+        Esta operación permite consultar las publicaciones.
+      parameters:
+        - $ref: '#/components/parameters/title'
       responses:
         '200':
-          description: Éxito
+          description: Devuelve la lista completa de las publicaciones guardadas.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - publication
       summary: Crear una nueva publicación
+      description: |
+        Esta operación permite crear una publicación.
       requestBody:
         required: true
         content:
@@ -222,21 +582,69 @@ paths:
               $ref: '#/components/schemas/Publication'
       responses:
         '201':
-          description: Publicación creada correctamente
+          description: La publicación se ha creado de manera correcta.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
+        '400':
+            description: Bad Request (Error de validcación en los datos de entrada)
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/BadRequestException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
-  /publications/{id}:
+  /publications/{publicationId}:
     get:
       summary: Obtener una publicación por ID
+      description: |
+        Esta operación permite consultar una publicación mediante su ID.
       parameters:
         - $ref: '#/components/parameters/publicationId'
       responses:
         '200':
-          description: Éxito
+          description: La publicación se ha encontrado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
         '404':
-          description: Publicación no encontrada
+            description: No se ha podido encontrar la publicación.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     put:
+      tags:
+        - publication
       summary: Actualizar una publicación por ID
+      description: |
+        Esta operación permite actualizar una publicación.
       parameters:
         - $ref: '#/components/parameters/publicationId'
       requestBody:
@@ -247,28 +655,96 @@ paths:
               $ref: '#/components/schemas/Publication'
       responses:
         '200':
-          description: Publicación actualizada correctamente
+          description: La publicación se ha actualizado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
         '404':
-          description: Publicación no encontrada
+            description: No se ha podido encontrar la publicación.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     delete:
+      tags:
+        - publication
       summary: Eliminar una publicación por ID
+      description: |
+        Esta operación permite eliminar una publicación.
       parameters:
         - $ref: '#/components/parameters/publicationId'
       responses:
         '200':
-          description: Publicación eliminada correctamente
+          description: La publicación ha sido eliminado correctamente.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Publication'
         '404':
-          description: Publicación no encontrada
+            description: No se ha podido encontrar la publicación.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
   /categories:
     get:
+      tags:
+        - category
       summary: Obtener todas las categorías
+      description:
+        Esta operación permite obtener una lista de las categorias guardadas.
+      parameters:
+        - $ref: '#/components/parameters/name'
       responses:
         '200':
-          description: Éxito
+          description: Devuelve la lista de categorias.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
     post:
+      tags:
+        - category
       summary: Crear una nueva categoría
+      description:
+        Esta operación permite crear categorias en la base de datos.
       requestBody:
         required: true
         content:
@@ -277,21 +753,71 @@ paths:
               $ref: '#/components/schemas/Category'
       responses:
         '201':
-          description: Categoría creada correctamente
+          description: La categoría se ha creado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
+        '400':
+            description: Bad Request (Error de validcación en los datos de entrada)
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/BadRequestException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
-  /categories/{id}:
+  /categories/{categoryId}:
     get:
+      tags:
+        - category
       summary: Obtener una categoría por ID
+      description:
+        Esta operación permite obtener una lista de categorías obtenidas mediante el ID.
       parameters:
         - $ref: '#/components/parameters/categoryId'
       responses:
         '200':
-          description: Éxito
+          description: La categoría se ha encontrado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
         '404':
-          description: Categoría no encontrada
+            description: No se ha podido encontrar la categoria.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     put:
+      tags:
+        - category
       summary: Actualizar una categoría por ID
+      description:
+        Esta operación permite modificar una categoria.
       parameters:
         - $ref: '#/components/parameters/categoryId'
       requestBody:
@@ -302,19 +828,63 @@ paths:
               $ref: '#/components/schemas/Category'
       responses:
         '200':
-          description: Categoría actualizada correctamente
+          description: La categoría se ha actualizado.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
         '404':
-          description: Categoría no encontrada
+            description: No se ha podido encontrar la categoría.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
     delete:
+      tags:
+        - category
       summary: Eliminar una categoría por ID
+      description:
+        Esta operación permite eliminar una categoria.
       parameters:
         - $ref: '#/components/parameters/categoryId'
       responses:
         '200':
-          description: Categoría eliminada correctamente
+          description: La categoría se ha eliminado de manera correcta.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Category'
         '404':
-          description: Categoría no encontrada
+            description: No se ha podido encontrar la categoria.
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/ResourceNotFoundException'
+        '500':
+            description: Internal Server Error
+            content:
+              application/json:
+                schema:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/InternalServerError'
 
 components:
   schemas:
@@ -403,12 +973,11 @@ components:
             properties:
               id:
                 type: integer
-        required:
-          - title
-          - content
-          - user
-          - category
-          -
+      required:
+        - title
+        - content
+        - user
+        - category
 
     Category:
       type: object
@@ -420,38 +989,127 @@ components:
       required:
         - name
 
+    InternalServerError:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+      required:
+        - message
+        - code
+
+    BadRequestException:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+      required:
+        - message
+        - code
+
+    ResourceNotFoundException:
+      type: object
+      properties:
+        message:
+          type: string
+        code:
+          type: integer
+      required:
+        - message
+        - code
+
   parameters:
     userId:
-      name: id
+      name: userId
       in: path
+      description: ID del usuario.
       required: true
       schema:
         type: integer
 
     tagId:
-      name: id
+      name: tagId
       in: path
       required: true
       schema:
         type: integer
 
     commentId:
-      name: id
+      name: commentId
       in: path
       required: true
       schema:
         type: integer
 
     publicationId:
-      name: id
+      name: publicationId
       in: path
       required: true
       schema:
         type: integer
 
     categoryId:
-      name: id
+      name: categoryId
       in: path
       required: true
       schema:
         type: integer
+
+    userName:
+      name: Nombre
+      in: query
+      description: Escribir el nombre del usuario
+      example: Marcos
+      required: false
+      schema:
+        type: string
+    name:
+      name: Nombre
+      in: query
+      description: Escribir el nombre del usuario
+      example: Eduardo
+      required: false
+      schema:
+        type: string
+    text:
+      name: Texto
+      in: query
+      description: Escribir el texto referente al comentario.
+      example: El
+      required: false
+      schema:
+        type: string
+    title:
+      name: Título
+      in: query
+      description: Título de la publicación
+      example: Fútbol
+      required: false
+      schema:
+        type: string
+
+  responses:
+    BadRequestException:
+      description: Bad Request
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/BadRequestException'
+
+    ResourceNotFoundException:
+      description: Resource Not Found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ResourceNotFoundException'
+
+    InternalServerError:
+      description: Internal Server Error
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/InternalServerError'
